@@ -1,7 +1,9 @@
 ## Monitoring Solution 
 
 •	**Prometheus:** An open-source systems monitoring and alerting toolkit that collects metrics from configured targets at given intervals.
+
 •	**Grafana:** A multi-platform open-source analytics and interactive visualization web application that provides charts, graphs, and alerts.
+
 •	**Alertmanager:** A component of the Prometheus ecosystem that handles alerts sent by client applications.
 
 ### Step-by-Step Deployment Guide
