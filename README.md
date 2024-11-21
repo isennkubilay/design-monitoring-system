@@ -68,7 +68,7 @@ kubectl port-forward svc/prometheus-operator-grafana 3000:80
 1.	High Memory Usage on Nodes
 2.	Low Disk Space on Nodes
 3.	Pods in CrashLoopBackOff State
-
+---
 1. High Memory Usage on Nodes:
 
 ```highmem.yaml
