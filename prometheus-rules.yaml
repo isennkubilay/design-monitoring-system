@@ -1,0 +1,39 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: critical-alerts
+  labels:
+    prometheus: kube-prometheus
+    role: alert-rules
+spec:
+  groups:
+    - name: node.rules
+      rules:
+        - alert: HighNodeMemoryUsage
+          expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 80
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "High Memory Usage on Node {{ $labels.instance }}"
+            description: "Memory usage is above 80% on node {{ $labels.instance }}. Current usage is {{ $value | printf "%.2f" }}%."
+
+        - alert: LowNodeDiskSpace
+          expr: (node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_free_bytes{mountpoint="/"}) / node_filesystem_size_bytes{mountpoint="/"} * 100 > 85
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Low Disk Space on Node {{ $labels.instance }}"
+            description: "Disk usage is above 85% on node {{ $labels.instance }}. Current usage is {{ $value | printf "%.2f" }}%."
+
+    - name: kubernetes.rules
+      rules:
+        - alert: PodCrashLoopBackOff
+          expr: count(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"}) > 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Pod in CrashLoopBackOff State"
+            description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} is in CrashLoopBackOff state."
